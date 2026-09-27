@@ -1,0 +1,52 @@
+# Configurazione di J.A.R.V.I.S. — nessun valore è hardcoded nel codice.
+# Le chiavi segrete stanno in .env, mai qui.
+
+user:
+  title: "Signore"          # come Jarvis si rivolge all'utente ("Signore", "Signora", un nome)
+  name: ""                  # nome proprio, opzionale
+  location: "Italia"        # iniettata nel contesto a ogni turno
+  timezone: "Europe/Rome"
+  language: "it"
+
+brain:
+  persona_path: "server/jarvis/brain/persona.md"
+  history_turns: 12         # memoria breve: ultimi N scambi utente/assistente
+  request_timeout_s: 60
+  # Router dei modelli: il livello viene scelto per ogni richiesta.
+  models:
+    fast:                   # comandi rapidi e chiacchiera
+      model: "claude-haiku-4-5"
+      max_tokens: 1024
+      thinking: false
+    smart:                  # ragionamento e task multi-step
+      model: "claude-sonnet-5"
+      max_tokens: 4096
+      thinking: true
+      effort: "low"
+    deep:                   # solo su richiesta esplicita ("pensaci bene")
+      model: "claude-opus-5-5"
+      max_tokens: 16000
+      thinking: true
+      effort: "high"
+  router:
+    deep_triggers:
+      - "pensaci bene"
+      - "ragionaci bene"
+      - "pensaci a fondo"
+      - "rifletti bene"
+    smart_triggers:
+      - "analizza"
+      - "confronta"
+      - "pianifica"
+      - "organizza"
+      - "spiegami"
+      - "scrivi"
+      - "riassumi"
+      - "perché"
+      - "passo passo"
+      - "strategia"
+    smart_min_words: 30     # richieste più lunghe vanno al modello "smart"
+
+logging:
+  level: "INFO"
+  file: "logs/jarvis.log"
